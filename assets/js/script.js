@@ -108,17 +108,65 @@ $(".saveBtn").click(function() {
  saveTasks();
 });
 
+
 // LEFT OFF HERE - need to figure out how to alter time slots
-var auditTime = function() {
-  var textArea = $(".input-text");
-  var scheduleTime = $(".time-block").find("p").text().trim();
-  console.log(scheduleTime);
+var currentHour = moment().format("k");
+console.log(currentHour);
+$(".time-block").each(function (){
+  var timeDiv = $(this).attr("id");
+  console.log(timeDiv);
 
-  var currentHour = moment().format("h:00 A");
-
-  if (currentHour == scheduleTime) {
-    textArea.addClass(".present");
+  if (currentHour === timeDiv) {
+    $(this).children("textarea").removeClass("future");
+    $(this).children("textarea").addClass("present");
   }
+  else if (currentHour < timeDiv) {
+    $(this).children("textarea").removeClass("present");
+    $(this).children("textarea").addClass("future");
+  }
+  else if (currentHour > timeDiv) {
+    $(this).children("textarea").removeClass("present future")
+    $(this).children("textarea").addClass("past");
+  }
+});
+
+// var auditTime = function() {
+  
+//   var currentHour = moment().format("H");
+  
+//   var timeBlockEl = $(".time-block");
+//   //var scheduleTime = $(".hour");
+//   //console.log(scheduleTime);
+//   //var scheduleTime = $(".time-block").find("p").text().trim();
+  
+  
+//   for (var i=0; i<timeBlockEl.length; i++) {
+
+//     var elementID = timeBlockEl[i].id;
+
+//     var rowID = document.getElementById(timeBlockEl[i].id)
+//     console.log(rowID);
+
+//     $(timeBlockEl[i].id).removeClass(".present .past .future");
+
+//     if (elementID < currentHour) {
+//       $(rowID).addClass(".past");
+//     }
+//     else if (elementID > currentHour) {
+//       $(rowID).addClass(".future");
+//     }
+//     else {
+//       $(rowID).addClass(".present");
+//     }
+
+//   }
+  // var scheduleTime = $(".time-block").find("p").text().trim();
+  // console.log(scheduleTime);
+
+
+  // if (currentHour == scheduleTime) {
+  //   textArea.addClass(".present");
+  // }
 
   // $(".time-block").each(function() {
   //   var scheduleTime = $(this).attr("id");
@@ -139,7 +187,7 @@ var auditTime = function() {
   //   textArea.addClass(".future");
   // }
 
-}
+//}
 //auditTime();
 
 
