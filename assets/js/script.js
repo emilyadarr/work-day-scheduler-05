@@ -2,29 +2,6 @@ var currentDay = moment().format("dddd, MMMM D YYYY");
 
 $("#currentDay").replaceWith(currentDay);
 
-// var times = [
-//   "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
-// ];
-
-// var formEl = document.getElementById("form");
-
-// create rows for time slots
-// for (var i=0; i < times.length; i++) {
-//   const rowEl = document.createElement("div");
-//   rowEl.setAttribute("class", "row form-row")
-//   const timeCol = document.createElement("div");
-//   timeCol.setAttribute("class", "col-2 time");
-//   timeCol.textContent = times[i];
-//   const inputCol = document.createElement("textarea");
-//   inputCol.setAttribute("class", "col input-text")
-//   const formBtn = document.createElement("button");
-//   formBtn.setAttribute("class", "btn saveBtn");
-//   formBtn.innerHTML = "<span class='oi oi-hard-drive'></span>";
-//   formEl.appendChild(rowEl);
-//   rowEl.append(timeCol, inputCol, formBtn);
-// }
-
-//CHECK THIS
 var tasks = {};
 
 var createTask = function(taskText, taskList) {
@@ -53,23 +30,11 @@ var loadTasks = function() {
     };
   }
 
-  // for (var i = 0; i < tasks.length; i++) {
-  //   // var taskText = document.createElement("textarea");
-  //   // taskText.innerText = tasks[i];
-  //   // taskText.setAttribute("class", "col input-text");
-  //   $("#row-" + tasks[i]).append(tasks[i]);
-
-  //   };
-
   $.each(tasks, function(list, currentValue) {
     console.log(list, currentValue);
-   // currentValue.forEach(function(task) {
       $("#row-" + list).append(currentValue);
-      //createTask(task.text, list);
-    // });
   });
 };
-
 
 
 var saveTasks = function() {
@@ -143,6 +108,39 @@ $(".saveBtn").click(function() {
  saveTasks();
 });
 
+// LEFT OFF HERE - need to figure out how to alter time slots
+var auditTime = function() {
+  var textArea = $(".input-text");
+  var scheduleTime = $(".time-block").find("p").text().trim();
+  console.log(scheduleTime);
+
+  var currentHour = moment().format("h:00 A");
+
+  if (currentHour == scheduleTime) {
+    textArea.addClass(".present");
+  }
+
+  // $(".time-block").each(function() {
+  //   var scheduleTime = $(this).attr("id");
+  //   console.log(scheduleTime);
+  // })
+  
+  //get current time
+  // var time = moment().format("h:00 A");
+  // console.log(time);
+
+  // if (time === scheduleTime) {
+  //   textArea.addClass(".present");
+  // }
+  // else if (time.isAfter(scheduleTime)) {
+  //   textArea.addClass(".past");
+  // }
+  // else {
+  //   textArea.addClass(".future");
+  // }
+
+}
+//auditTime();
 
 
 loadTasks();
