@@ -1,17 +1,10 @@
-var currentDay = moment().format("dddd, MMMM D YYYY");
-
-$("#currentDay").replaceWith(currentDay);
-
+var currentDay = moment().format("dddd, MMMM D, YYYY");
 var tasks = {};
 
-var createTask = function(taskText, taskList) {
-  var taskNew = $("<textarea>")
-    .addClass("col input-text")
-    .text(taskText);
+// display current day
+$("#currentDay").replaceWith(currentDay);
 
-  $("#row-" + taskList).append(taskNew);
-};
-
+// load tasks from local storage
 var loadTasks = function() {
   tasks = JSON.parse(localStorage.getItem("tasks"));
 
@@ -30,52 +23,19 @@ var loadTasks = function() {
     };
   }
 
+  // append tasks copy to the correct time slot
   $.each(tasks, function(list, currentValue) {
-    console.log(list, currentValue);
       $("#row-" + list).append(currentValue);
   });
+  auditTime();
 };
 
-
+// save tasks function - setting tasks array
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
-// textarea was clicked
-// $(".input-text").on("click", "textarea", function() {
-//   var text = $(this)
-//     .text()
-//     .trim();
-//   //replace textarea with new input
-//   var textInput = $("<textarea>").addClass("col input-text").val(text);
-//   $(this).replaceWith(textInput);
-
-//   textInput.trigger("focus");
-//   //saveTasks();
-// });
-
-// $(".input-text").on("blur", "textarea", function() {
-//   var text = $(this).val();
-
-//   var status = $(this)
-//     .closest(".time-block")
-//     .attr("id")
-//     .replace("row-", "");
-//   var index = $(this)
-//     .closest(".input-text")
-//     .index();
-
-//   tasks[status][index].text = text;
-//   saveTasks();
-
-//   var taskUpdate = $("<textarea>")
-//     .addClass("col input-text")
-//     .text(text);
-
-//   $(this).replaceWith(taskUpdate);
-
-// });
-
+// when button is clicked, update tasks array with new values
 $(".saveBtn").click(function() {
   var taskInput9 = document.getElementById("row-nineAM").value;
   tasks.nineAM = taskInput9;
@@ -104,110 +64,34 @@ $(".saveBtn").click(function() {
   var taskInput5 = document.getElementById("row-fivePM").value;
   tasks.fivePM = taskInput5;
 
-
  saveTasks();
 });
 
-
-// LEFT OFF HERE - need to figure out how to alter time slots
-var currentHour = moment().format("k");
-console.log(currentHour);
-$(".time-block").each(function (){
-  var timeDiv = $(this).attr("id");
-  console.log(timeDiv);
-
-  if (currentHour === timeDiv) {
-    $(this).children("textarea").removeClass("future");
-    $(this).children("textarea").addClass("present");
-  }
-  else if (currentHour < timeDiv) {
-    $(this).children("textarea").removeClass("present");
-    $(this).children("textarea").addClass("future");
-  }
-  else if (currentHour > timeDiv) {
-    $(this).children("textarea").removeClass("present future")
-    $(this).children("textarea").addClass("past");
-  }
-});
-
-// var auditTime = function() {
+// audit time to update hour styling
+var auditTime = function() {
+  var currentHour = moment().format("kk");
+  $(".time-block").each(function (){
+    var timeDiv = $(this).attr("id");
   
-//   var currentHour = moment().format("H");
-  
-//   var timeBlockEl = $(".time-block");
-//   //var scheduleTime = $(".hour");
-//   //console.log(scheduleTime);
-//   //var scheduleTime = $(".time-block").find("p").text().trim();
-  
-  
-//   for (var i=0; i<timeBlockEl.length; i++) {
+    if (currentHour === timeDiv) {
+      $(this).children("textarea").removeClass("future past");
+      $(this).children("textarea").addClass("present");
+    }
+    else if (currentHour > timeDiv) {
+      $(this).children("textarea").removeClass("present future");
+      $(this).children("textarea").addClass("past");
+    }
+    else if (currentHour < timeDiv) {
+      $(this).children("textarea").removeClass("present past");
+      $(this).children("textarea").addClass("future");
+    }
+  });
+};
 
-//     var elementID = timeBlockEl[i].id;
+// audit time every 3 minutes
+setInterval(function() {
+  auditTime();
+},(1000*6)*3);
 
-//     var rowID = document.getElementById(timeBlockEl[i].id)
-//     console.log(rowID);
-
-//     $(timeBlockEl[i].id).removeClass(".present .past .future");
-
-//     if (elementID < currentHour) {
-//       $(rowID).addClass(".past");
-//     }
-//     else if (elementID > currentHour) {
-//       $(rowID).addClass(".future");
-//     }
-//     else {
-//       $(rowID).addClass(".present");
-//     }
-
-//   }
-  // var scheduleTime = $(".time-block").find("p").text().trim();
-  // console.log(scheduleTime);
-
-
-  // if (currentHour == scheduleTime) {
-  //   textArea.addClass(".present");
-  // }
-
-  // $(".time-block").each(function() {
-  //   var scheduleTime = $(this).attr("id");
-  //   console.log(scheduleTime);
-  // })
-  
-  //get current time
-  // var time = moment().format("h:00 A");
-  // console.log(time);
-
-  // if (time === scheduleTime) {
-  //   textArea.addClass(".present");
-  // }
-  // else if (time.isAfter(scheduleTime)) {
-  //   textArea.addClass(".past");
-  // }
-  // else {
-  //   textArea.addClass(".future");
-  // }
-
-//}
-//auditTime();
-
-
+// load tasks for the first time
 loadTasks();
-
-// AS AN employee with a busy schedule
-// I WANT to add important events to a daily planner
-// SO THAT I can manage my time effectively
-
-// Acceptance Criteria
-// GIVEN I am using a daily planner to create a schedule
-// WHEN I open the planner
-// THEN the current day is displayed at the top of the calendar
-// WHEN I scroll down
-// THEN I am presented with time blocks for standard business hours
-// WHEN I view the time blocks for that day
-// THEN each time block is color-coded to indicate whether it is in the past, present, or future
-// WHEN I click into a time block
-// THEN I can enter an event
-// WHEN I click the save button for that time block
-// THEN the text for that event is saved in local storage
-// WHEN I refresh the page
-// THEN the saved events persist
